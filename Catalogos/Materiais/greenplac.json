@@ -1,0 +1,38 @@
+{
+  "fabricante": "Greenplac",
+  "padroes": [
+    {
+      "id": "greenplac_branco_supremo",
+      "nome": "Branco Supremo",
+      "linha": "Essenzia",
+      "cor_rgb": [246, 246, 246],
+      "textura_url": null,
+      "tem_veio": false,
+      "espessuras_disponiveis": [6.0, 15.0, 18.0],
+      "dimensoes_chapa": { "comprimento": 2750.0, "largura": 1850.0 },
+      "propriedades_opticas": { "roughness": 0.8, "reflection": 0.05 }
+    },
+    {
+      "id": "greenplac_freijo_pampa",
+      "nome": "Freijó Pampa",
+      "linha": "Tocantis",
+      "cor_rgb": [160, 118, 76],
+      "textura_url": "texturas/greenplac/freijo_pampa.jpg",
+      "tem_veio": true,
+      "espessuras_disponiveis": [15.0, 18.0],
+      "dimensoes_chapa": { "comprimento": 2750.0, "largura": 1850.0 },
+      "propriedades_opticas": { "roughness": 0.42, "reflection": 0.09 }
+    },
+    {
+      "id": "greenplac_pietra_grigia",
+      "nome": "Pietra Grigia",
+      "linha": "Modernitta",
+      "cor_rgb": [105, 108, 112],
+      "textura_url": "texturas/greenplac/pietra_grigia.jpg",
+      "tem_veio": false,
+      "espessuras_disponiveis": [15.0, 18.0],
+      "dimensoes_chapa": { "comprimento": 2750.0, "largura": 1850.0 },
+      "propriedades_opticas": { "roughness": 0.6, "reflection": 0.06 }
+    }
+  ]
+}

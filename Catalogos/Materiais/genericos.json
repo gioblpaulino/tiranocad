@@ -1,0 +1,27 @@
+{
+  "fabricante": "Padrão / Genéricos",
+  "padroes": [
+    {
+      "id": "generico_mdf_cru",
+      "nome": "MDF Cru (Sem Revestimento)",
+      "linha": "Básico",
+      "cor_rgb": [205, 175, 130],
+      "textura_url": "texturas/genericos/mdf_cru.jpg",
+      "tem_veio": false,
+      "espessuras_disponiveis": [3.0, 6.0, 9.0, 12.0, 15.0, 18.0, 25.0],
+      "dimensoes_chapa": { "comprimento": 2750.0, "largura": 1850.0 },
+      "propriedades_opticas": { "roughness": 0.9, "reflection": 0.0 }
+    },
+    {
+      "id": "generico_branco_tx",
+      "nome": "Branco TX (Padrão Caixaria)",
+      "linha": "Básico",
+      "cor_rgb": [245, 245, 245],
+      "textura_url": null,
+      "tem_veio": false,
+      "espessuras_disponiveis": [6.0, 15.0, 18.0, 25.0],
+      "dimensoes_chapa": { "comprimento": 2750.0, "largura": 1830.0 },
+      "propriedades_opticas": { "roughness": 0.8, "reflection": 0.05 }
+    }
+  ]
+}

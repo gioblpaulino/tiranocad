@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TiranoGio CAD - Fábrica</title>
+    <style>
+        body {
+            background-color: #2b2b2b;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .header-painel {
+            padding: 15px 20px 0 20px;
+        }
+
+        h2 {
+            border-bottom: 2px solid #007acc;
+            padding-bottom: 10px;
+            margin-top: 0;
+            font-size: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #444;
+            margin-bottom: 0;
+            padding: 0 20px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: #aaa;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: #fff;
+        }
+
+        .tab-btn.active {
+            color: #fff;
+            border-bottom: 3px solid #007acc;
+        }
+
+        .content-area {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px 20px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border: 1px solid #444;
+        }
+
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #007acc;
+            margin-bottom: 12px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #ddd;
+        }
+
+        input[type="number"],
+        select,
+        input[type="range"] {
+            padding: 6px 10px;
+            background-color: #1e1e1e;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            border-color: #007acc;
+            outline: none;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .grid-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .footer-painel {
+            padding: 15px 20px;
+            background-color: #252525;
+            border-top: 1px solid #444;
+        }
+
+        .btn-gerar {
+            width: 100%;
+            padding: 12px;
+            background-color: #007acc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-gerar:hover {
+            background-color: #005f9e;
+        }
+
+        #viewport-2d {
+            width: 100%;
+            height: 300px;
+            background-color: #e0e0e0;
+            border: 4px solid #8b5a2b;
+            display: flex;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            position: relative;
+            border-radius: 4px;
+        }
+
+        .bsp-node {
+            display: flex;
+            flex: 1;
+            box-sizing: border-box;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cut-v {
+            flex-direction: row;
+        }
+
+        .cut-h {
+            flex-direction: column;
+        }
+
+        .bsp-leaf {
+            display: flex;
+            flex: 1;
+            box-sizing: border-box;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            background-color: transparent;
+            border: 1px dashed #aaa;
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+
+        .bsp-leaf:hover {
+            background-color: rgba(0, 122, 204, 0.1);
+        }
+
+        .bsp-leaf.selected,
+        .bsp-leaf.selected-multiple {
+            background-color: rgba(0, 122, 204, 0.18) !important;
+            border: 2px solid #007acc !important;
+            z-index: 10;
+        }
+
+        .mdf-divider-v {
+            width: 8px;
+            background-color: #8b5a2b;
+            border-left: 1px solid #5c3a18;
+            border-right: 1px solid #5c3a18;
+            cursor: col-resize;
+            transition: background-color 0.2s;
+        }
+
+        .mdf-divider-h {
+            height: 8px;
+            background-color: #8b5a2b;
+            border-top: 1px solid #5c3a18;
+            border-bottom: 1px solid #5c3a18;
+            cursor: row-resize;
+            transition: background-color 0.2s;
+        }
+
+        .mdf-divider-v:hover,
+        .mdf-divider-h:hover {
+            background-color: #ffaa00;
+        }
+
+        .mdf-divider-v.selected,
+        .mdf-divider-h.selected {
+            background-color: #ff3333;
+        }
+
+        .node-label {
+            font-size: 11px;
+            color: #555;
+            pointer-events: none;
+            font-weight: bold;
+        }
+
+        .node-content-label {
+            font-size: 11px;
+            color: #007acc;
+            font-weight: bold;
+            pointer-events: none;
+            background: #fff;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-bottom: 2px;
+            border: 1px solid #007acc;
+        }
+
+        .medida-label {
+            position: absolute;
+            font-size: 10px;
+            color: #000;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 1px 4px;
+            border-radius: 3px;
+            pointer-events: none;
+            font-weight: 500;
+        }
+
+        .toolbar-cad {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .btn-tool {
+            flex: 1;
+            padding: 8px;
+            background-color: #444;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .btn-tool:hover {
+            background-color: #555;
+        }
+
+        .btn-tool.danger {
+            background-color: #8b0000;
+        }
+
+        .btn-tool.danger:hover {
+            background-color: #a30000;
+        }
+
+        #painel-edicao-no {
+            display: none;
+            background-color: #222;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #444;
+        }
+    </style>
+</head>
+
+<body onload="inicializarPainel()">
+    <div class="header-painel">
+        <h2 id="titulo-painel">Construtor Paramétrico</h2>
+        <div class="tabs">
+            <button class="tab-btn active" id="btn-aba-estrutura" onclick="abrirAba('aba-estrutura')">Estrutura Base</button>
+            <button class="tab-btn" id="btn-aba-visual" onclick="abrirAba('aba-visual')">Construtor Visual</button>
+            <button class="tab-btn" id="btn-aba-modulo" onclick="abrirAba('aba-modulo')">📐 Ajustes do Módulo</button>
+            <button class="tab-btn" id="btn-aba-ambiente" onclick="abrirAba('aba-ambiente')">Criar Ambiente 3D</button>
+            <button class="tab-btn" id="btn-aba-fabrica" onclick="abrirAba('aba-fabrica')">⚙️ Ajustes de Fábrica</button>
+            <button class="tab-btn" id="btn-aba-acabamentos" onclick="abrirAba('aba-acabamentos')">🎨 Acabamentos</button> 
+        </div>
+    </div>
+
+    <div class="content-area">
+        <!-- ABA 1: ESTRUTURA BASE -->
+        <div id="aba-estrutura" class="tab-content active">
+            <div class="section" style="border-left: 4px solid #007acc; background-color: #222;">
+                <div class="form-group">
+                    <label style="color: #007acc; font-weight: bold;">Perfil de Montagem:</label>
+                    <select id="perfil_montagem" style="width: 50%;">
+                        <option value="Padrao_Convencional_15mm">Padrão Convencional 15mm</option>
+                        <option value="Padrao_Convencional_18mm">Padrão Convencional 18mm </option>
+                        <option value="Padrao_Convencional_25mm">Padrão Convencional 25mm </option>
+                        <option value="Padrao_Gemini">Padrão Convencional (Mini-fix)</option>
+                        <option value="Padrao_Convencional_Cava">Padrão Cava / Gola (Parafuso)</option>
+                        <option value="Padrao_Gemini_Cava">Padrão Cava / Gola (Mini-fix)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section" style="border-left: 4px solid #ffaa00;">
+                <div class="section-title" style="color: #ffaa00;">Posicionamento no Ambiente</div>
+                <div class="grid-2col">
+                    <div class="grid-item">
+                        <label>X Inicial (mm):</label>
+                        <input type="number" id="ambiente_pos_x" value="0" style="width: 100%;">
+                    </div>
+                    <div class="grid-item">
+                        <label>Y / Afastamento:</label>
+                        <input type="number" id="ambiente_pos_y" value="0" style="width: 100%;">
+                    </div>
+                    <div class="grid-item">
+                        <label>Z / Elevação:</label>
+                        <input type="number" id="ambiente_pos_z" value="0" style="width: 100%;">
+                    </div>
+                    <div class="grid-item">
+                        <label>Rotação (Ângulo):</label>
+                        <select id="ambiente_rot_z" style="width: 100%;">
+                            <option value="0">0° (Frontal)</option>
+                            <option value="90">90° (Lateral Direita)</option>
+                            <option value="180">180° (Invertido)</option>
+                            <option value="270">270° (Lateral Esquerda)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Opções da Caixaria</div>
+                
+                <div class="form-group">
+                    <label>Tipo de Módulo:</label>
+                    <select id="categoria_modulo" style="width: 50%;"
+                        onchange="ajustarCamposPorCategoria(); aplicarLimitesMarcenaria();">
+                        <option value="INFERIOR">Módulo Inferior (Balcão)</option>
+                        <option value="AEREO">Módulo Aéreo (Suspenso)</option>
+                        <option value="TORRE_ALTA">Armário Alto (Torre)</option>
+                        <option value="ROUPEIRO">Roupeiro (Guarda-Roupa)</option>
+                    </select>
+                </div>
+
+                <div id="container_montagem_caixa" class="form-group">
+                    <label>Caixaria Base:</label>
+                    <select id="tipo_montagem_caixa" style="width: 50%;">
+                        <option value="Base Passante">Base Passante</option>
+                        <option value="Lateral Passante">Lateral Passante</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Fitar Lats. Base?</label>
+                    <input type="checkbox" id="fita_laterais_base">
+                </div>
+                <div class="form-group">
+                    <label>Fundo Traseiro:</label>
+                    <select id="com_fundo" style="width: 50%;">
+                        <option value="sim">Com Fundo 6mm</option>
+                        <option value="nao">Sem Fundo (Pia)</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="container_fechamento_traseiro">
+                    <label id="label_fechamento_traseiro">Sarrafo Traseiro:</label>
+                    <select id="sarrafo_tras" style="width: 50%;">
+                        <option value="deitado">Deitado</option>
+                        <option value="em_pe">Em Pé</option>
+                        <option value="nenhum">Nenhum</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Dimensões Totais</div>
+                <div class="form-group">
+                    <label>Largura (mm):</label>
+                    <input type="number" id="largura" value="800" style="width: 50%;"
+                        oninput="validarDimensoesAbsolutas()" onchange="renderizarArvore()">
+                </div>
+                <div class="form-group">
+                    <label>Altura (mm):</label>
+                    <input type="number" id="altura" value="700" style="width: 50%;"
+                        oninput="validarDimensoesAbsolutas()" onchange="renderizarArvore()">
+                </div>
+                <div class="form-group">
+                    <label>Profundidade (mm):</label>
+                    <input type="number" id="profundidade" value="550" style="width: 50%;"
+                        oninput="validarDimensoesAbsolutas()">
+                </div>
+            </div>
+        </div>
+        
+        <!-- ABA: ACABAMENTOS & MATERIAIS -->
+        <div id="aba-acabamentos" class="tab-content">
+          <div class="section">
+            <div class="section-title">Padrões de MDF & Fitas</div>
+
+            <div class="form-group" style="flex-direction: column; align-items: flex-start; gap: 6px;">
+              <label for="material_caixaria">MDF Caixaria / Interno:</label>
+              <select id="material_caixaria" style="width: 100%;"></select>
+            </div>
+
+            <div class="form-group" style="flex-direction: column; align-items: flex-start; gap: 6px; margin-top: 10px;">
+              <label for="material_frentes">MDF Frentes / Externo:</label>
+              <select id="material_frentes" style="width: 100%;"></select>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Configuração de Fita de Borda</div>
+            <div class="form-group">
+              <label for="fita_frontal_frente">Fita Frontal Acompanha Revestimento:</label>
+              <input type="checkbox" id="fita_frontal_frente" checked>
+            </div>
+            <div class="section-title" style="font-size: 11px; color: #ffaa00; margin-top: 10px;">Aplicação Individual nas Bordas</div>
+            <div class="grid-2col">
+              <div class="grid-item">
+                <label>Fitar Frontal?</label>
+                <input type="checkbox" id="fita_borda_frontal" checked>
+              </div>
+              <div class="grid-item">
+                <label>Fitar Traseira?</label>
+                <input type="checkbox" id="fita_borda_traseira">
+              </div>
+              <div class="grid-item">
+                <label>Fitar Esquerda?</label>
+                <input type="checkbox" id="fita_borda_esquerda">
+              </div>
+              <div class="grid-item">
+                <label>Fitar Direita?</label>
+                <input type="checkbox" id="fita_borda_direita">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ABA 3: AJUSTES DO MÓDULO -->
+        <div id="aba-modulo" class="tab-content">
+            <div class="section-title" style="color: #007acc;">Folgas e Recuos do Armário</div>
+            <div class="section">
+                <div class="section-title" style="font-size: 11px; color: #ffaa00;">Gaps de Design das Frentes (mm)
+                </div>
+                <div class="grid-2col">
+                    <div class="grid-item">
+                        <label>Teto (Superior):</label>
+                        <input type="number" id="gap_sup" value="4.0" step="0.5" style="width: 100%">
+                    </div>
+                    <div class="grid-item">
+                        <label>Base (Inferior):</label>
+                        <input type="number" id="gap_inf" value="4.0" step="0.5" style="width: 100%">
+                    </div>
+                    <div class="grid-item">
+                        <label>Laterais Externas:</label>
+                        <input type="number" id="gap_lat" value="4.0" step="0.5" style="width: 100%">
+                    </div>
+                    <div class="grid-item">
+                        <label>Entre Portas/Gavetas:</label>
+                        <input type="number" id="gap_int" value="4.0" step="0.5" style="width: 100%">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title" style="font-size: 11px; color: #ffaa00;">Posicionamento do Canal (Costa)
+                </div>
+                <div class="form-group">
+                    <label>Afastamento/Recuo Traseiro (mm):</label>
+                    <input type="number" id="mod_recuo_fundo" value="15.0" step="1" style="width: 40%;">
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title" style="font-size: 11px; color: #ffaa00;">Afastamentos Internos (Prateleiras e
+                    Divisórias)</div>
+                <div class="grid-2col">
+                    <div class="grid-item">
+                        <label title="Negativo = Avanço para fora">Recuo Prat. Frontal:</label>
+                        <input type="number" id="recuo_frt_prat" value="20.0" step="1" style="width: 100%;">
+                    </div>
+                    <div class="grid-item">
+                        <label>Recuo Prat. Traseiro:</label>
+                        <input type="number" id="recuo_trs_prat" value="22.0" step="1" style="width: 100%;">
+                    </div>
+                    <div class="grid-item">
+                        <label title="Negativo = Avanço para fora">Recuo Div. Frontal:</label>
+                        <input type="number" id="recuo_frt_div" value="0.0" step="1" style="width: 100%;">
+                    </div>
+                    <div class="grid-item">
+                        <label>Recuo Div. Traseiro:</label>
+                        <input type="number" id="recuo_trs_div" value="22.0" step="1" style="width: 100%;">
+                    </div>
+                </div>
+                <p style="font-size: 10px; color: #aaa; margin-top: 8px; margin-bottom: 0;">
+                    * Dica: Digite um valor negativo (ex: -10) no Recuo Frontal para gerar um avanço na peça.
+                </p>
+            </div>
+        </div>
+
+        <!-- ABA 4: CONSTRUTOR VISUAL -->
+        <div id="aba-visual" class="tab-content">
+            <div class="section-title" style="margin-bottom: 5px;">Editor 2D Frontal</div>
+            <p style="font-size: 11px; color: #888; margin-top: 0;">Selecione vãos livres (Segure CTRL para múltipla
+                seleção) ou divisórias para editar.</p>
+
+            <div class="toolbar-cad">
+              <button class="btn-tool" onclick="cortarNo('v')">| Cortar Vertical</button>
+              <button class="btn-tool" onclick="cortarNo('h')">— Cortar Horizontal</button>
+              <button class="btn-tool danger" onclick="limparNo()">Excluir Cortes</button>
+            </div>
+
+            <div id="viewport-2d"></div>
+
+            <div id="painel-edicao-no">
+                <div class="section-title" style="color: #007acc;" id="nome-no-editado">Editando Vão</div>
+
+                <div id="props-folha">
+                    <div class="form-group">
+                        <label>Frentes:</label>
+                        <div style="display:flex; gap:5px; width: 55%;">
+                            <select id="no_frente_tipo" style="width: 100%;"
+                                onchange="verificarLimitesFrentes(); salvarDadosNo();">
+                                <option value="nenhuma">Nicho Aberto</option>
+                                <option value="portas">Porta(s)</option>
+                                <option value="gavetas">Gaveta(s)</option>
+                                <option value="porta_tempero">Porta Tempero</option>
+                                <option value="gavetas_internas">Gaveteiro Interno (Roupeiro)</option>
+                                <option value="sapateiras_internas">Sapateira Deslizante</option>
+                            </select>
+                            <input type="number" id="no_frente_qtd" value="1" min="1"
+                                style="width: 45px; text-align:center;"
+                                oninput="verificarLimitesFrentes(); salvarDadosNo();">
+                        </div>
+                    </div>
+                    
+                    <!-- 🚀 NOVO CAMPO: Sentido da Abertura da Porta Única -->
+                    <div class="form-group" id="container_sentido_porta" style="display: none;">
+                      <label>Abertura da Porta:</label>
+                      <select id="no_frente_sentido" style="width: 55%;" onchange="salvarDadosNo();">
+                        <option value="esquerda">Esquerda (Dobradiça na Esq.)</option>
+                        <option value="direita">Direita (Dobradiça na Dir.)</option>
+                      </select>
+                    </div>
+
+                    <!-- Contêiner de Engenharia dos Afastadores e Folgas Internas -->
+                    <div id="container_afastadores_bsp"
+                        style="display: none; background: #252525; padding: 10px; border-radius: 4px; margin-bottom: 10px; border: 1px solid #444;">
+                        <div class="section-title" style="font-size: 11px; color: #ffaa00; margin-bottom: 8px;">
+                            Afastadores de Escape (mm)</div>
+                        <div class="grid-2col" style="margin-bottom: 8px;">
+                            <div class="grid-item">
+                                <label>Afast. Esquerdo:</label>
+                                <input type="number" id="afast_esq" value="0" min="0" step="1"
+                                    style="width: 100%; font-size: 12px; padding: 4px;" onchange="salvarDadosNo()">
+                            </div>
+                            <div class="grid-item">
+                                <label>Afast. Direito:</label>
+                                <input type="number" id="afast_dir" value="0" min="0" step="1"
+                                    style="width: 100%; font-size: 12px; padding: 4px;" onchange="salvarDadosNo()">
+                            </div>
+                        </div>
+
+                        <div class="section-title"
+                            style="font-size: 11px; color: #007acc; margin-bottom: 8px; margin-top: 10px;">Recuos do
+                            Bloco Afastador</div>
+                        <div class="grid-2col" style="margin-bottom: 8px;">
+                            <div class="grid-item">
+                                <label>Recuo Frontal:</label>
+                                <input type="number" id="afast_recuo_front" value="50" min="0" step="5"
+                                    style="width: 100%; font-size: 12px; padding: 4px;" onchange="salvarDadosNo()">
+                            </div>
+                            <div class="grid-item">
+                                <label>Recuo Traseiro:</label>
+                                <input type="number" id="afast_recuo_tras" value="20" min="0" step="5"
+                                    style="width: 100%; font-size: 12px; padding: 4px;" onchange="salvarDadosNo()">
+                            </div>
+                            <div class="grid-item">
+                                <label title="Largura das ripas frontal e traseira do afastador">Largura da
+                                    Régua:</label>
+                                <input type="number" id="afast_larg_regua" value="60" min="30" step="5"
+                                    style="width: 100%; font-size: 12px; padding: 4px;" onchange="salvarDadosNo()">
+                            </div>
+                        </div>
+
+                        <div class="section-title"
+                            style="font-size: 11px; color: #ffaa00; margin-bottom: 8px; margin-top: 10px;">Folgas e Gaps
+                            da Gaveta Interna</div>
+                        <div class="grid-2col">
+                            <div class="grid-item">
+                                <label title="Espaço superior livre para enfiar a mão e puxar a gaveta">Gap Mão
+                                    (Sup):</label>
+                                <input type="number" id="gav_int_gap_mao" value="30" min="0" step="5"
+                                    style="width: 100%; font-size: 12px; padding: 4px;" onchange="salvarDadosNo()">
+                            </div>
+                            <div class="grid-item">
+                                <label title="Folga inferior apenas para a primeira gaveta em relação à base">Gap
+                                    Inferior Base:</label>
+                                <input type="number" id="gav_int_gap_inf_base" value="15" min="0" step="1"
+                                    style="width: 100%; font-size: 12px; padding: 4px;" onchange="salvarDadosNo()">
+                            </div>
+                            <div class="grid-item">
+                                <label
+                                    title="Folga lateral entre o caixote da gaveta e o bloco afastador para instalação da corrediça">Gap
+                                    Lat. Corrediça:</label>
+                                <input type="number" id="gav_int_gap_lat_corredica" value="13" min="0" step="0.5"
+                                    style="width: 100%; font-size: 12px; padding: 4px;" onchange="salvarDadosNo()">
+                            </div>
+                            <div class="grid-item">
+                                <label title="Redução da altura das 4 peças do caixote igualmente">Redução
+                                    Caixote:</label>
+                                <input type="number" id="gav_int_red_corpo" value="0" min="0" step="5"
+                                    style="width: 100%; font-size: 12px; padding: 4px;" onchange="salvarDadosNo()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="container_gaveta_dinamica"
+                        style="display: none; background: #252525; padding: 10px; border-radius: 4px; margin-bottom: 10px; border: 1px solid #444;">
+                        <div class="form-group" style="margin-bottom: 6px;">
+                            <label style="font-size: 11px; color: #007acc;">Fixar Gavetão Alto?</label>
+                            <input type="checkbox" id="no_gaveta_destaque" onchange="salvarDadosNo();">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-size: 11px;">Altura do Gavetão (mm):</label>
+                            <input type="number" id="no_altura_destaque" value="300" min="150"
+                                style="width: 50px; padding: 2px 4px; font-size: 11px;" onchange="salvarDadosNo();">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Prateleiras Livres:</label>
+                        <input type="number" id="no_qtd_prat" value="0" min="0" style="width: 55%;"
+                            onchange="salvarDadosNo()">
+                    </div>
+                    <div class="form-group" id="container_ferragem_prat" style="display: none;">
+                        <label>Fixação da Prat.:</label>
+                        <select id="no_ferragem_prat" style="width: 55%;" onchange="salvarDadosNo()">
+                            <option value="pino">Pino (Invisível)</option>
+                            <option value="minifix">Minifix 15mm</option>
+                            <option value="cavilha">Cavilha 8mm</option>
+                            <option value="cantoneira">Cantoneira L</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="props-divisor" style="display:none;">
+                  <div class="form-group">
+                    <label>Tipo da Divisão:</label>
+                    <select id="no_tipo_divisao" style="width: 55%;" onchange="salvarDadosNo()">
+                      <option value="prateleira_fixa">Prateleira Fixa (Estrutural)</option>
+                      <option value="prateleira_livre">Prateleira Livre (Móvel)</option>
+                    </select>
+                  </div>
+              
+                  <div class="form-group">
+                    <label>Espessura da Chapa:</label>
+                    <span id="lbl_espessura_divisor" style="font-weight: bold; color: #007acc; width: 55%;">15 mm</span>
+                  </div>
+              
+                  <div class="form-group">
+                    <label>Posição (%):</label>
+                    <input type="range" id="no_split_ratio" min="10" max="90" value="50" style="width: 55%;" oninput="salvarDadosNo()">
+                  </div>
+              
+                  <div class="form-group" style="margin-top: 5px;">
+                    <label>Medidas Vãos (mm):</label>
+                    <div style="display:flex; gap:5px; width: 55%;">
+                      <input type="number" id="medida_a" style="width: 100%; text-align:center; font-weight:bold; color:#ffaa00;" onchange="atualizarPorMedidaA()" title="Vão da Esquerda / Baixo">
+                      <span style="color:#aaa; line-height:28px;">|</span>
+                      <input type="number" id="medida_b" style="width: 100%; text-align:center; font-weight:bold; color:#ffaa00;" onchange="atualizarPorMedidaB()" title="Vão da Direita / Cima">
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 5: CRIAR AMBIENTE 3D -->
+        <div id="aba-ambiente" class="tab-content">
+            <div class="section-title" style="color: #ffaa00;">Construir Cômodo Útil</div>
+            <div class="section">
+                <div class="form-group">
+                    <label>Formato do Quarto:</label>
+                    <select id="ambiente_formato" style="width: 55%;">
+                        <option value="L">Formato em 'L' (2 Paredes)</option>
+                        <option value="U">Formato em 'U' (3 Paredes)</option>
+                        <option value="FECHADO">Quarto Fechado (4 Paredes)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Parede X (mm):</label>
+                    <input type="number" id="amb_dim_x" value="4000" style="width: 55%;">
+                </div>
+                <div class="form-group">
+                    <label>Parede Y (mm):</label>
+                    <input type="number" id="amb_dim_y" value="3000" style="width: 55%;">
+                </div>
+                <div class="form-group">
+                    <label>Pé-Direito/Altura:</label>
+                    <input type="number" id="amb_dim_z" value="2600" style="width: 55%;">
+                </div>
+                <div class="form-group">
+                    <label>Espessura Alvenaria:</label>
+                    <input type="number" id="amb_esp_parede" value="150" style="width: 55%;">
+                </div>
+            </div>
+            <button class="btn-gerar" style="background-color: #ffaa00;" onclick="gerarCenarioAmbiente()">Erguer Paredes
+                e Piso</button>
+        </div>
+
+        <!-- ABA 6: AJUSTES DE FÁBRICA -->
+        <div id="aba-fabrica" class="tab-content">
+            <div class="section-title" style="color: #007acc;">Configurações de Usinagem CNC</div>
+            <div class="section">
+                <div class="section-title" style="font-size: 11px; color: #ffaa00;">Canal do Fundo (MDF/Costa)</div>
+                <div class="grid-2col">
+                    <div class="grid-item">
+                        <label>Profundidade do canal:</label>
+                        <input type="number" id="fab_prof_rasgo" value="8.0" step="0.5" style="width: 100%;">
+                    </div>
+                    <div class="grid-item">
+                        <label>Largura Canal:</label>
+                        <input type="number" id="fab_larg_rasgo" value="7.0" step="0.5" style="width: 100%;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title" style="font-size: 11px; color: #ffaa00;">Parâmetros de Brocas de Linha</div>
+                <div class="grid-2col">
+                    <div class="grid-item">
+                        <label>Broca Minifix (mm):</label>
+                        <input type="number" id="fab_broca_minifix" value="5.0" step="0.1" style="width: 100%;">
+                    </div>
+                    <div class="grid-item">
+                        <label>Broca Soberbo (mm):</label>
+                        <input type="number" id="fab_broca_parafuso" value="4.5" step="0.1" style="width: 100%;">
+                    </div>
+                    <div class="grid-item">
+                        <label>Broca Cavilha (mm):</label>
+                        <input type="number" id="fab_broca_cavilha" value="6.0" step="0.1" style="width: 100%;">
+                    </div>
+                    <div class="grid-item">
+                        <label>Broca Caneco (mm):</label>
+                        <input type="number" id="fab_broca_caneco" value="35.0" step="1" style="width: 100%;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title" style="font-size: 11px; color: #ffaa00;">Regras de Furação (Distribuição CNC)
+                </div>
+                <div class="grid-2col">
+                    <div class="grid-item">
+                        <label title="Distância da borda frontal até o 1º furo">Recuo 1º Furo (mm):</label>
+                        <input type="number" id="fab_furo_front" value="50.0" step="1" style="width: 100%;">
+                    </div>
+                    <div class="grid-item">
+                        <label title="Distância da borda traseira até o último furo">Recuo Últ. Furo (mm):</label>
+                        <input type="number" id="fab_furo_tras" value="50.0" step="1" style="width: 100%;">
+                    </div>
+                    <div class="grid-item">
+                        <label title="Se o vão ultrapassar essa medida, um novo furo nasce no meio.">Vão Máx. Entre
+                            Furos:</label>
+                        <input type="number" id="fab_furo_max_vao" value="250.0" step="1" style="width: 100%;">
+                    </div>
+                    <div class="grid-item">
+                        <label title="Recuo para o caixote das gavetas">Afastamento Gaveta:</label>
+                        <input type="number" id="fab_furo_gaveta" value="30.0" step="1" style="width: 100%;">
+                    </div>
+                </div>
+                <p style="font-size: 10px; color: #aaa; margin-top: 5px; margin-bottom: 0;">
+                    O motor interpolará furos intermediários automaticamente se a chapa for profunda.
+                </p>
+            </div>
+        </div>
+    </div>
+        <!-- PAINEL DO COPILOTO TIRANOGIO (index.html) -->
+    <div class="section" style="border-left: 4px solid #007acc; background-color: #1a1a1a; margin: 15px 20px 0 20px;">
+      <div class="section-title" style="color: #007acc; font-weight: bold; margin-bottom: 6px;">
+        🤖 Copiloto TiranoGio (IA)
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <input type="text" id="txt-comando-copiloto" placeholder="Ex: Divida o vão ao meio e coloque 3 gavetas na esquerda..." 
+               style="flex-grow: 1; background: #1e1e1e; border: 1px solid #555; color: white; padding: 8px; border-radius: 4px; font-size: 12px;">
+        <button type="button" onclick="dispararCopiloto()" 
+                style="background: #007acc; color: white; border: none; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px; white-space: nowrap;">
+          Enviar IA
+        </button>
+      </div>
+    </div>
+    <div class="footer-painel" style="display: flex; gap: 10px;">
+        <button id="btn-acao" class="btn-gerar" onclick="enviarParaRuby()">Fabricar Módulo 3D</button>
+        <button id="btn-flask" class="btn-gerar" style="background-color: #007acc;"
+            onclick="dispararExportacaoFlask()">🌐 Ver Holograma Web</button>
+    </div>
+
+    <script>
+        var idEdicaoAtual = null;
+        let bspTree = {
+            id: "V", split: null, splitRatio: 0.5, filhoA: null, filhoB: null,
+            dados: { frente: "nenhuma", qtd_frente: 1, qtd_prat: 0, ferragem_prat: "pino" }
+        };
+        let nosSelecionadosIds = ["V"];
+        let noSelecionadoId = "V";
+        let arrastandoDivisoria = false;
+        let noArrastoAlvo = null;
+
+        function inicializarPainel() {
+            renderizarArvore();
+            setupArrastoEventos();
+            if (typeof sketchup !== 'undefined') { sketchup.paginaPronta(); }
+        }
+
+        function abrirAba(idAba) {
+            document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(idAba).style.display = 'block';
+            document.getElementById('btn-' + idAba).classList.add('active');
+        }
+
+        function encontrarNo(no, alvoId) {
+            if (!no) return null;
+            if (no.id === alvoId) return no;
+            if (no.filhoA) { let res = encontrarNo(no.filhoA, alvoId); if (res) return res; }
+            if (no.filhoB) { let res = encontrarNo(no.filhoB, alvoId); if (res) return res; }
+            return null;
+        }
+
+        function encontrarPai(noBase, alvoId) {
+            if (!noBase || !noBase.split) return null;
+            if (noBase.filhoA.id === alvoId || noBase.filhoB.id === alvoId) return noBase;
+            let paiA = encontrarPai(noBase.filhoA, alvoId);
+            if (paiA) return paiA;
+            return encontrarPai(noBase.filhoB, alvoId);
+        }
+
+        function selecionarNo(e, id) {
+            if (e) e.stopPropagation();
+
+            if (e && (e.ctrlKey || e.metaKey)) {
+                let index = nosSelecionadosIds.indexOf(id);
+                if (index > -1) {
+                    nosSelecionadosIds.splice(index, 1);
+                } else {
+                    nosSelecionadosIds.push(id);
+                }
+            } else {
+                nosSelecionadosIds = [id];
+            }
+
+            noSelecionadoId = nosSelecionadosIds[0] || "V";
+            renderizarArvore();
+            atualizarPainelEdicao();
+        }
+
+        function encontrarPaiComumDasFolhas(listaIds) {
+            if (!listaIds || listaIds.length === 0) return null;
+            if (listaIds.length === 1) return listaIds[0];
+
+            let caminhos = listaIds.map(id => id.split('_'));
+            let paiComumX = [];
+            let menorComprimento = Math.min(...caminhos.map(c => c.length));
+
+            for (let i = 0; i < menorComprimento; i++) {
+                let segmento = caminhos[0][i];
+                let todosIguais = caminhos.every(c => c[i] === segmento);
+                if (todosIguais) {
+                    paiComumX.push(segmento);
+                } else {
+                    break;
+                }
+            }
+            return paiComumX.join('_');
+        }
+
+        function limparFrentesDosDescendentes(no) {
+            if (!no) return;
+            if (no.filhoA) {
+                no.filhoA.dados.frente = "nenhuma";
+                no.filhoA.dados.qtd_frente = 1;
+                limparFrentesDosDescendentes(no.filhoA);
+            }
+            if (no.filhoB) {
+                no.filhoB.dados.frente = "nenhuma";
+                no.filhoB.dados.qtd_frente = 1;
+                limparFrentesDosDescendentes(no.filhoB);
+            }
+        }
+
+        function cortarNo(eixo) {
+            let no = encontrarNo(bspTree, noSelecionadoId);
+            if (!no || no.split) return;
+
+            let nivel = no.id.split("_").length;
+            if (nivel >= 5) {
+                alert("Limite atingido! O vão ficaria pequeno demais.");
+                return;
+            }
+
+            no.dados = { frente: "nenhuma", qtd_frente: 1, qtd_prat: 0 };
+            no.split = eixo;
+            no.splitRatio = 0.5;
+            no.filhoA = { id: no.id + "_A", split: null, splitRatio: 0.5, filhoA: null, filhoB: null, dados: { frente: "nenhuma", qtd_frente: 1, qtd_prat: 0 } };
+            no.filhoB = { id: no.id + "_B", split: null, splitRatio: 0.5, filhoA: null, filhoB: null, dados: { frente: "nenhuma", qtd_frente: 1, qtd_prat: 0 } };
+
+            nosSelecionadosIds = [no.filhoA.id];
+            noSelecionadoId = no.filhoA.id;
+            renderizarArvore();
+            atualizarPainelEdicao();
+        }
+
+        function limparNo() {
+            let no = encontrarNo(bspTree, noSelecionadoId);
+            if (!no) return;
+
+            let noParaLimpar = no;
+            if (!no.split && no.id !== "V") {
+                noParaLimpar = encontrarPai(bspTree, no.id);
+            }
+
+            if (noParaLimpar) {
+                noParaLimpar.split = null;
+                noParaLimpar.filhoA = null;
+                noParaLimpar.filhoB = null;
+                noParaLimpar.dados = { frente: "nenhuma", qtd_frente: 1, qtd_prat: 0 };
+
+                nosSelecionadosIds = [noParaLimpar.id];
+                noSelecionadoId = noParaLimpar.id;
+                renderizarArvore();
+                atualizarPainelEdicao();
+            }
+        }
+
+        function limparFrentesIncompativeis(no) {
+            if (no.split) {
+                limparFrentesIncompativeis(no.filhoA);
+                limparFrentesIncompativeis(no.filhoB);
+            } else {
+                let categoriaGlobal = document.getElementById('categoria_modulo').value;
+                if (categoriaGlobal === "AEREO" && (no.dados.frente === "gavetas" || no.dados.frente === "porta_tempero")) {
+                    no.dados.frente = "nenhuma";
+                    no.dados.qtd_frente = 1;
+                }
+            }
+        }
+        // 1. Alternância de Abas na UI
+        function selecionarAba(nomeAba) {
+          // Oculta todas as abas
+          document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+          document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        
+          // Ativa a aba clicada
+          const abaAlvo = document.getElementById(`tab-${nomeAba}`);
+          if (abaAlvo) abaAlvo.classList.add('active');
+        
+          // Destaca o botão da aba ativa
+          event.currentTarget.classList.add('active');
+        }
+
+        // 2. Carrega dinamicamente as marcas e padrões do servidor Flask/Ruby
+        function carregarMateriais() {
+  const selCaixa = document.getElementById('material_caixaria');
+  const selFrente = document.getElementById('material_frentes');
+  if (!selCaixa || !selFrente) return;
+
+  // Catálogo Padrão de Segurança (Fallback Offline/SketchUp)
+  const catalogosPadrao = [
+    {
+      fabricante: "Padrão / Genéricos",
+      padroes: [
+        { id: "generico_branco_tx", nome: "Branco TX (Padrão Caixaria)" },
+        { id: "generico_mdf_cru", nome: "MDF Cru (Sem Revestimento)" }
+      ]
+    },
+    {
+      fabricante: "Arauco",
+      padroes: [
+        { id: "arauco_louro_freijo", nome: "Louro Freijó" },
+        { id: "arauco_branco_supremo", nome: "Branco Supremo" }
+      ]
+    },
+    {
+      fabricante: "Duratex",
+      padroes: [
+        { id: "duratex_carvalho_hanover", nome: "Carvalho Hanover" },
+        { id: "duratex_gianduia", nome: "Gianduia" }
+      ]
+    }
+  ];
+
+          function preencherSelects(catalogos) {
+            selCaixa.innerHTML = '';
+            selFrente.innerHTML = '';
+        
+            catalogos.forEach(cat => {
+              const groupCaixa = document.createElement('optgroup');
+              groupCaixa.label = cat.fabricante;
+            
+              const groupFrente = document.createElement('optgroup');
+              groupFrente.label = cat.fabricante;
+            
+              cat.padroes.forEach(p => {
+                const optC = document.createElement('option');
+                optC.value = p.id;
+                optC.textContent = `${p.nome} (${p.linha || 'Geral'})`;
+                if (p.id === 'generico_branco_tx') optC.selected = true;
+                groupCaixa.appendChild(optC);
+            
+                const optF = document.createElement('option');
+                optF.value = p.id;
+                optF.textContent = `${p.nome} (${p.linha || 'Geral'})`;
+                if (p.id === 'arauco_louro_freijo') optF.selected = true;
+                groupFrente.appendChild(optF);
+              });
+          
+              selCaixa.appendChild(groupCaixa);
+              selFrente.appendChild(groupFrente);
+            });
+          }
+      
+          fetch('/api/materiais')
+            .then(res => {
+              if (!res.ok) throw new Error("Servidor não respondeu OK");
+              return res.json();
+            })
+            .then(catalogos => {
+              if (Array.isArray(catalogos) && catalogos.length > 0) {
+                preencherSelects(catalogos);
+              } else {
+                preencherSelects(catalogosPadrao);
+              }
+            })
+            .catch(err => {
+              console.log('Aviso: Carregando catálogo padrão de segurança.', err);
+              preencherSelects(catalogosPadrao);
+            });
+        }
+
+        // Inicializa o carregamento dos materiais ao abrir a janela
+        document.addEventListener('DOMContentLoaded', carregarMateriais);
+
+        function ajustarCamposPorCategoria() {
+            limparFrentesIncompativeis(bspTree);
+            let category = document.getElementById('categoria_modulo').value;
+            let labelFechamento = document.getElementById('label_fechamento_traseiro');
+            let selectFechamento = document.getElementById('sarrafo_tras');
+
+            if (category === "AEREO") {
+                labelFechamento.innerText = "Fixação Aéreo:";
+                selectFechamento.innerHTML = `
+ <option value="Mao_Amiga">Mão Amiga (Régua 45°)</option>
+ <option value="Duplo_Reforco">Duplo Reforço (Fundo)</option>
+ <option value="Bucha_Simples">Bucha Simples (Superior)</option>
+ `;
+            } else {
+                labelFechamento.innerText = "Sarrafo Traseiro:";
+                selectFechamento.innerHTML = `
+ <option value="deitado">Deitado</option>
+ <option value="em_pe">Em Pé</option>
+ <option value="nenhum">Nenhum</option>
+ `;
+            }
+            atualizarPainelEdicao();
+            renderizarArvore();
+        }
+
+        function atualizarPainelEdicao() {
+            let no = encontrarNo(bspTree, noSelecionadoId);
+            let painel = document.getElementById('painel-edicao-no');
+            let categoria = document.getElementById('categoria_modulo').value;
+
+            if (no) {
+                painel.style.display = 'block';
+
+                let forçarFrenteMultipla = nosSelecionadosIds.length > 1;
+                let noAlvoDados = no;
+
+                if (forçarFrenteMultipla) {
+                    let idPaiComum = encontrarPaiComumDasFolhas(nosSelecionadosIds);
+                    let noPai = encontrarNo(bspTree, idPaiComum);
+                    if (noPai) noAlvoDados = noPai; // Lê os dados diretamente do Pai Comum
+                }
+
+                if (no.split && !forçarFrenteMultipla) {
+                    document.getElementById('props-folha').style.display = 'none';
+                    document.getElementById('props-divisor').style.display = 'block';
+                    document.getElementById('nome-no-editado').innerText = "Editando Divisão: " + no.id;
+                    document.getElementById('no_split_ratio').value = (no.splitRatio * 100).toString();
+
+                    
+                    // Obtém a espessura dinâmica configurada
+                    let inputEsp = document.getElementById('espessura_mdf');
+                    let mdf = inputEsp ? (parseFloat(inputEsp.value) || 15.0) : 15.0;
+
+
+                    // Atualiza o rótulo informativo
+                    let lblEsp = document.getElementById('lbl_espessura_divisor');
+                    if (lblEsp) lblEsp.innerText = mdf + " mm";
+
+                    let selTipoDiv = document.getElementById('no_tipo_divisao');
+                    if (selTipoDiv) {
+                        selTipoDiv.value = (no.dados && no.dados.tipo_divisao) ? no.dados.tipo_divisao : (no.split === 'h' ? "prateleira_fixa" : "divisoria_vertical");
+                    }
+                
+                    let total_mm = no.split === 'v' ? no.w_mm : no.h_mm;
+                    let valA = (total_mm - mdf) * no.splitRatio;
+                    let valB = (total_mm - mdf) * (1 - no.splitRatio);
+                    document.getElementById('medida_a').value = Math.round(valA);
+                    document.getElementById('medida_b').value = Math.round(valB);
+                } else {
+                    document.getElementById('props-folha').style.display = 'block';
+                    document.getElementById('props-divisor').style.display = 'none';
+
+                    if (forçarFrenteMultipla) {
+                        document.getElementById('nome-no-editado').innerText = "Frente Unificada (Pai): " + noAlvoDados.id;
+                    } else {
+                        document.getElementById('nome-no-editado').innerText = "Editando Vão: " + no.id;
+                    }
+
+                    let selectFrente = document.getElementById('no_frente_tipo');
+
+                    if (categoria === "AEREO") {
+                        selectFrente.querySelector('option[value="gavetas"]').disabled = true;
+                        selectFrente.querySelector('option[value="porta_tempero"]').disabled = true;
+                    } else {
+                        selectFrente.querySelector('option[value="gavetas"]').disabled = false;
+                        selectFrente.querySelector('option[value="porta_tempero"]').disabled = false;
+                    }
+
+                    // Carrega os dados do nó alvo
+                    let frenteTipo = noAlvoDados.dados.frente || "nenhuma";
+                    selectFrente.value = frenteTipo;
+                    document.getElementById('no_frente_qtd').value = noAlvoDados.dados.qtd_frente || 1;
+                    document.getElementById('no_frente_qtd').style.display = (frenteTipo === 'nenhuma' || frenteTipo === 'porta_tempero') ? 'none' : 'block';
+
+                    // Sentido da Porta Única
+                    let selectSentido = document.getElementById('no_frente_sentido');
+                    if (selectSentido) {
+                        selectSentido.value = noAlvoDados.dados.sentido_porta || "esquerda";
+                    }
+
+                    verificarLimitesFrentes();
+                    alternarSentidoPorta();
+
+                    document.getElementById('container_gaveta_dinamica').style.display = (frenteTipo === "gavetas") ? "block" : "none";
+                    document.getElementById('no_gaveta_destaque').checked = noAlvoDados.dados.gaveta_destaque_ativa || false;
+                    document.getElementById('no_altura_destaque').value = noAlvoDados.dados.altura_gaveta_destaque || 300;
+
+                    document.getElementById('afast_esq').value = noAlvoDados.dados.afast_esq || 0;
+                    document.getElementById('afast_dir').value = noAlvoDados.dados.afast_dir || 0;
+                    document.getElementById('afast_recuo_front').value = noAlvoDados.dados.afast_recuo_front !== undefined ? noAlvoDados.dados.afast_recuo_front : 70;
+                    document.getElementById('afast_recuo_tras').value = noAlvoDados.dados.afast_recuo_tras !== undefined ? noAlvoDados.dados.afast_recuo_tras : 21;
+                    document.getElementById('afast_larg_regua').value = noAlvoDados.dados.afast_larg_regua !== undefined ? noAlvoDados.dados.afast_larg_regua : 50;
+                    document.getElementById('gav_int_gap_mao').value = noAlvoDados.dados.gav_int_gap_mao !== undefined ? noAlvoDados.dados.gav_int_gap_mao : 20;
+                    document.getElementById('gav_int_gap_inf_base').value = noAlvoDados.dados.gav_int_gap_inf_base !== undefined ? noAlvoDados.dados.gav_int_gap_inf_base : 5;
+                    document.getElementById('gav_int_gap_lat_corredica').value = noAlvoDados.dados.gav_int_gap_lat_corredica !== undefined ? noAlvoDados.dados.gav_int_gap_lat_corredica : 13;
+                    document.getElementById('gav_int_red_corpo').value = noAlvoDados.dados.gav_int_red_corpo !== undefined ? noAlvoDados.dados.gav_int_red_corpo : 0;
+
+                    alternarAfastadoresEletivos();
+
+                    let inputPrat = document.getElementById('no_qtd_prat');
+
+                
+                    if (frenteTipo === "gavetas" || frenteTipo === "porta_tempero" || frenteTipo === "gavetas_internas" || frenteTipo === "sapateiras_internas") {
+                        noAlvoDados.dados.qtd_prat = 0;
+                        inputPrat.value = 0;
+                        inputPrat.disabled = true;
+                        inputPrat.parentElement.style.opacity = "0.4";
+                    } else {
+                        inputPrat.value = noAlvoDados.dados.qtd_prat || 0;
+                        inputPrat.disabled = false;
+                        inputPrat.parentElement.style.opacity = "1.0";
+                    }
+
+                    document.getElementById('container_ferragem_prat').style.display = (noAlvoDados.dados.qtd_prat > 0) ? 'flex' : 'none';
+                    document.getElementById('no_ferragem_prat').value = noAlvoDados.dados.ferragem_prat || "pino";
+                }
+            } else {
+                painel.style.display = 'none';
+            }
+        }
+
+        function alternarAfastadoresEletivos() {
+            let tipo = document.getElementById('no_frente_tipo').value;
+            let container = document.getElementById('container_afastadores_bsp');
+            if (tipo === "gavetas_internas" || tipo === "sapateiras_internas") {
+                container.style.display = "block";
+            } else {
+                container.style.display = "none";
+            }
+        }
+
+        function atualizarPorMedidaA() {
+            let no = encontrarNo(bspTree, noSelecionadoId);
+            if (no && no.split) {
+                let total_mm = no.split === 'v' ? no.w_mm : no.h_mm;
+                let max_livre = total_mm - 15.0;
+                let valA = parseFloat(document.getElementById('medida_a').value);
+
+                if (isNaN(valA) || valA < 50) valA = 50;
+                if (valA > max_livre - 50) valA = max_livre - 50;
+
+                no.splitRatio = valA / max_livre;
+                renderizarArvore();
+                atualizarPainelEdicao();
+            }
+        }
+
+        function atualizarPorMedidaB() {
+            let no = encontrarNo(bspTree, noSelecionadoId);
+            if (no && no.split) {
+                let total_mm = no.split === 'v' ? no.w_mm : no.h_mm;
+                let max_livre = total_mm - 15.0;
+                let valB = parseFloat(document.getElementById('medida_b').value);
+
+                if (isNaN(valB) || valB < 50) valB = 50;
+                if (valB > max_livre - 50) valB = max_livre - 50;
+
+                no.splitRatio = no.split === 'v' ? ((max_livre - valB) / max_livre) : (valB / max_livre);
+                renderizarArvore();
+                atualizarPainelEdicao();
+            }
+        }
+
+        function salvarDadosNo() {
+            let tipoElement = document.getElementById('no_frente_tipo');
+            let tipoFrente = tipoElement ? tipoElement.value : "nenhuma";
+            let selectSentido = document.getElementById('no_frente_sentido');
+            let sentidoPorta = selectSentido ? selectSentido.value : "esquerda";
+
+            // 1. Tratamento para seleção múltipla de nós (Pai Comum)
+            if (nosSelecionadosIds.length > 1) {
+                let idPaiComum = encontrarPaiComumDasFolhas(nosSelecionadosIds);
+                let noPai = encontrarNo(bspTree, idPaiComum);
+                if (noPai) {
+                    noPai.dados = noPai.dados || {};
+                    noPai.dados.frente = tipoFrente;
+                    noPai.dados.qtd_frente = parseInt(document.getElementById('no_frente_qtd').value) || 1;
+                    noPai.dados.sentido_porta = sentidoPorta;
+                
+                    renderizarArvore();
+                    atualizarPainelEdicao();
+                    return;
+                }
+            }
+        
+            let no = encontrarNo(bspTree, noSelecionadoId);
+            if (!no) return;
+        
+            // 2. Tratamento para Nó Divisor / Corte (com split)
+            if (no.split) {
+                let selTipoDiv = document.getElementById('no_tipo_divisao');
+                if (selTipoDiv) {
+                    no.dados = no.dados || {};
+                    no.dados.tipo_divisao = selTipoDiv.value;
+                }
+                renderizarArvore();
+                atualizarPainelEdicao();
+                return;
+            }
+        
+            // 3. Tratamento para Nó Folha / Vão Individual
+            no.dados = no.dados || {};
+            no.dados.frente = tipoFrente;
+            no.dados.qtd_frente = parseInt(document.getElementById('no_frente_qtd').value) || 1;
+            no.dados.sentido_porta = sentidoPorta;
+            no.dados.qtd_prat = parseInt(document.getElementById('no_qtd_prat').value) || 0;
+            no.dados.ferragem_prat = document.getElementById('no_ferragem_prat').value;
+            no.dados.gaveta_destaque_ativa = document.getElementById('no_gaveta_destaque').checked;
+            no.dados.altura_gaveta_destaque = parseFloat(document.getElementById('no_altura_destaque').value) || 300;
+        
+            if (no.dados.frente === "gavetas_internas" || no.dados.frente === "sapateiras_internas") {
+                no.dados.afast_esq = parseFloat(document.getElementById('afast_esq').value) || 50;
+                no.dados.afast_dir = parseFloat(document.getElementById('afast_dir').value) || 50;
+                no.dados.afast_recuo_front = parseFloat(document.getElementById('afast_recuo_front').value) || 70;
+                no.dados.afast_recuo_tras = parseFloat(document.getElementById('afast_recuo_tras').value) || 21;
+                no.dados.afast_larg_regua = parseFloat(document.getElementById('afast_larg_regua').value) || 50;
+                no.dados.gav_int_gap_mao = parseFloat(document.getElementById('gav_int_gap_mao').value) || 20;
+                no.dados.gav_int_gap_inf_base = parseFloat(document.getElementById('gav_int_gap_inf_base').value) || 5;
+                no.dados.gav_int_gap_lat_corredica = parseFloat(document.getElementById('gav_int_gap_lat_corredica').value) || 13;
+                no.dados.gav_int_red_corpo = parseFloat(document.getElementById('gav_int_red_corpo').value) || 0;
+                no.dados.tipo_deslizante = (no.dados.frente === "sapateiras_internas") ? "sapateira_deslizante" : "gaveta";
+            }
+        
+            renderizarArvore();
+            atualizarPainelEdicao();
+        }
+
+        function setupArrastoEventos() {
+            window.addEventListener('mousemove', (e) => {
+                if (!arrastandoDivisoria || !noArrastoAlvo) return;
+                let viewport = document.getElementById('viewport-2d');
+                let rect = viewport.getBoundingClientRect();
+
+                if (noArrastoAlvo.split === 'v') {
+                    let posX = e.clientX - rect.left;
+                    let pct = posX / rect.width;
+                    if (pct < 0.1) pct = 0.1; if (pct > 0.9) pct = 0.9;
+                    noArrastoAlvo.splitRatio = pct;
+                } else if (noArrastoAlvo.split === 'h') {
+                    let posY = e.clientY - rect.top;
+                    let pct = posY / rect.height;
+                    if (pct < 0.1) pct = 0.1; if (pct > 0.9) pct = 0.9;
+                    noArrastoAlvo.splitRatio = pct;
+                }
+                renderizarArvore();
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (arrastandoDivisoria) {
+                    arrastandoDivisoria = false;
+                    atualizarPainelEdicao();
+                }
+            });
+        }
+
+        function construirHTMLNode(no, w_mm, h_mm) {
+            no.w_mm = w_mm;
+            no.h_mm = h_mm;
+            let container = document.createElement('div');
+            container.className = 'bsp-node';
+
+            if (no.split) {
+                container.classList.add(no.split === 'v' ? 'cut-v' : 'cut-h');
+
+                let espessuraInput = document.getElementById('espessura_mdf');
+                let mdf = espessuraInput ? (parseFloat(espessuraInput.value) || 15.0) : 15.0;
+                let childA_w = no.split === 'v' ? ((w_mm - mdf) * no.splitRatio) : w_mm;
+                let childA_h = no.split === 'h' ? ((h_mm - mdf) * no.splitRatio) : h_mm;
+                let childB_w = no.split === 'v' ? (w_mm - mdf - childA_w) : w_mm;
+                let childB_h = no.split === 'h' ? (h_mm - mdf - childA_h) : h_mm;
+
+                let childA = construirHTMLNode(no.filhoA, childA_w, childA_h);
+                let childB = construirHTMLNode(no.filhoB, childB_w, childB_h);
+
+                childA.style.flex = no.splitRatio;
+                childB.style.flex = (1.0 - no.splitRatio);
+
+                let divider = document.createElement('div');
+                divider.className = no.split === 'v' ? 'mdf-divider-v' : 'mdf-divider-h';
+                if (no.id === noSelecionadoId) divider.classList.add('selected');
+
+                divider.onmousedown = (e) => {
+                    e.stopPropagation();
+                    arrastandoDivisoria = true;
+                    noArrastoAlvo = no;
+                    nosSelecionadosIds = [no.id];
+                    noSelecionadoId = no.id;
+                };
+                divider.onclick = (e) => selecionarNo(e, no.id);
+
+                if (no.split === 'h') {
+                    container.appendChild(childB);
+                    container.appendChild(divider);
+                    container.appendChild(childA);
+                } else {
+                    container.appendChild(childA);
+                    container.appendChild(divider);
+                    container.appendChild(childB);
+                }
+            } else {
+                container.className = 'bsp-leaf';
+                if (nosSelecionadosIds.includes(no.id)) container.classList.add('selected-multiple');
+                container.onclick = (e) => selecionarNo(e, no.id);
+
+                let info = "";
+                if (no.dados && no.dados.frente !== "nenhuma") {
+                    let tipoTexto = no.dados.frente === "portas" ? "Porta(s)" : (no.dados.frente === "gavetas" ? "Gaveta(s)" : "Tempero");
+                    info += `<div class="node-content-label">${no.dados.qtd_frente} ${tipoTexto}</div>`;
+                }
+                if (no.dados && no.dados.qtd_prat > 0) info += `<div class="node-label">${no.dados.qtd_prat} Prat.</div>`;
+
+                info += `<div class="medida-label">${Math.round(w_mm)}x${Math.round(h_mm)}</div>`;
+                container.innerHTML = info;
+            }
+            return container;
+        }
+
+        function renderizarArvore() {
+            let w = parseFloat(document.getElementById('largura').value) || 800;
+            let h = parseFloat(document.getElementById('altura').value) || 700;
+            if (w < 150) { w = 150; document.getElementById('largura').value = 150; }
+            if (h < 150) { h = 150; document.getElementById('altura').value = 150; }
+
+            let viewport = document.getElementById('viewport-2d');
+            viewport.innerHTML = '';
+
+            let maxDim = 400;
+            let escalaW, escalaH;
+
+            if (w > h) {
+                escalaW = maxDim;
+                escalaH = (h / w) * maxDim;
+            } else {
+                escalaH = maxDim;
+                escalaW = (w / h) * maxDim;
+            }
+
+            viewport.style.width = Math.round(escalaW) + "px";
+            viewport.style.height = Math.round(escalaH) + "px";
+            viewport.appendChild(construirHTMLNode(bspTree, w - 30, h - 30));
+        }
+
+        // Variável global para controle de estado
+        var modoEdicaoAtivo = false;
+
+        function inicializarPainel() {
+            // Se não estiver em modo de edição, cria a árvore raiz do zero
+            if (!modoEdicaoAtivo) {
+                bspTree = {
+                    id: "V",
+                    split: null,
+                    splitRatio: 0.5,
+                    filhoA: null,
+                    filhoB: null,
+                    dados: { frente: "nenhuma", qtd_frente: 1, qtd_prat: 0 }
+                };
+                noSelecionadoId = "V";
+                nosSelecionadosIds = ["V"];
+                renderizarArvore();
+            }
+        
+            // Notifica o SketchUp Ruby que a página HTML concluiu o carregamento
+            if (typeof sketchup !== 'undefined') {
+                sketchup.paginaPronta();
+            }
+        }
+
+        function preencherDadosEdicao(id, w, h, d) {
+                    idEdicaoAtual = id;
+                    document.getElementById('titulo-painel').innerText = "Modo de Edição";
+                    document.getElementById('largura').value = w;
+                    document.getElementById('altura').value = h;
+                    document.getElementById('profundidade').value = d;
+                    document.getElementById('btn-acao').innerText = "Salvar Alterações";
+                    renderizarArvore();
+                }
+            
+                function preencherDadosEdicaoCompleto(dados) {
+            if (!dados) return;
+                
+            // Marca que este painel está editando um módulo existente
+            modoEdicaoAtivo = true;
+                
+            // 1. Identificador de Edição
+            idEdicaoAtual = dados.id_edicao || "";
+                
+            // 2. Dimensões Externas
+            if (dados.w) document.getElementById('largura').value = dados.w;
+            if (dados.h) document.getElementById('altura').value = dados.h;
+            if (dados.d) document.getElementById('profundidade').value = dados.d;
+                
+            // 3. Categoria e Perfil
+            if (dados.categoria_modulo) {
+                let selCat = document.getElementById('categoria_modulo');
+                if (selCat) selCat.value = dados.categoria_modulo;
+            }
+            if (dados.perfil_montagem) {
+                let selPerfil = document.getElementById('perfil_montagem');
+                if (selPerfil) selPerfil.value = dados.perfil_montagem;
+            }
+        
+            // 4. Materiais
+            if (dados.material_caixaria) {
+                let selMatCaixa = document.getElementById('material_caixaria');
+                if (selMatCaixa) selMatCaixa.value = dados.material_caixaria;
+            }
+            if (dados.material_frentes) {
+                let selMatFrentes = document.getElementById('material_frentes');
+                if (selMatFrentes) selMatFrentes.value = dados.material_frentes;
+            }
+        
+            // 5. Restauração da Árvore BSP 2D
+            if (dados.arvore_json && dados.arvore_json.trim() !== "" && dados.arvore_json !== "null") {
+                try {
+                    bspTree = JSON.parse(dados.arvore_json);
+                    noSelecionadoId = bspTree.id || "V";
+                    nosSelecionadosIds = [noSelecionadoId];
+                    
+                    renderizarArvore();
+                    atualizarPainelEdicao();
+                    console.log("🎉 Árvore BSP restaurada com sucesso no HTML!");
+                } catch (e) {
+                    console.error("⚠️ Erro ao interpretar arvore_json:", e);
+                }
+            } else {
+                renderizarArvore();
+            }
+        
+            // Atualiza o título e botão de ação
+            let tit = document.getElementById('titulo-painel');
+            if (tit) tit.innerText = "Modo de Edição (" + idEdicaoAtual + ")";
+            let btn = document.getElementById('btn-acao');
+            if (btn) btn.innerText = "Salvar Alterações";
+        }
+
+        function validarDimensoesAbsolutas() {
+            let maxMDF = 2720;
+            let inputW = document.getElementById('largura');
+            let inputH = document.getElementById('altura');
+            let inputD = document.getElementById('profundidade');
+
+            if (parseFloat(inputW.value) > maxMDF) inputW.value = maxMDF;
+            if (parseFloat(inputH.value) > maxMDF) inputH.value = maxMDF;
+            if (parseFloat(inputD.value) > 1200) inputD.value = 1200;
+
+            if (parseFloat(inputW.value) < 1) inputW.value = 150;
+            if (parseFloat(inputH.value) < 1) inputH.value = 150;
+            if (parseFloat(inputD.value) < 1) inputD.value = 150;
+        }
+
+        function aplicarLimitesMarcenaria() {
+            let category = document.getElementById('categoria_modulo').value;
+            let inputW = document.getElementById('largura');
+            let inputH = document.getElementById('altura');
+            let inputD = document.getElementById('profundidade');
+
+            if (category === "AEREO") {
+                inputD.min = "150"; inputD.max = "450";
+                if (parseFloat(inputD.value) > 450) inputD.value = 350;
+            } else if (category === "ROUPEIRO") {
+                inputD.min = "450"; inputD.max = "700";
+                if (parseFloat(inputD.value) < 450) inputD.value = 550;
+            } else {
+                inputD.min = "300"; inputD.max = "800";
+            }
+
+            if (category === "ROUPEIRO" || category === "TORRE_ALTA") {
+                inputH.min = "1000"; inputH.max = "2720";
+                inputW.min = "400"; inputW.max = "1200";
+                if (parseFloat(inputH.value) < 1000) inputH.value = 2200;
+            } else if (category === "AEREO") {
+                inputH.min = "300"; inputH.max = "1200";
+                inputW.min = "150"; inputW.max = "1200";
+            } else {
+                inputH.min = "400"; inputH.max = "1000";
+                inputW.min = "150"; inputW.max = "1200";
+            }
+
+            renderizarArvore();
+        }
+
+        function alternarSentidoPorta() {
+          let tipo = document.getElementById('no_frente_tipo').value;
+          let qtd = parseInt(document.getElementById('no_frente_qtd').value) || 1;
+          let containerSentido = document.getElementById('container_sentido_porta');
+
+          if (tipo === 'portas' && qtd === 1) {
+            containerSentido.style.display = 'flex';
+          } else {
+            containerSentido.style.display = 'none';
+          }
+        }
+
+        function verificarLimitesFrentes() {
+            let no = encontrarNo(bspTree, noSelecionadoId);
+            if (!no) return;
+
+            let tipo = document.getElementById('no_frente_tipo').value;
+            let inputQtd = document.getElementById('no_frente_qtd');
+            let valorAtual = parseInt(inputQtd.value) || 1;
+
+            if (tipo === "portas") {
+                inputQtd.max = 2;
+                if (valorAtual > 2) inputQtd.value = 2;
+            } else if (tipo === "gavetas" || tipo === "gavetas_internas") {
+                let alturaDisponivel = no.h_mm || 700;
+                let maxGavetas = Math.floor(alturaDisponivel / 140.0);
+                if (maxGavetas < 1) maxGavetas = 1;
+
+                inputQtd.max = maxGavetas;
+                inputQtd.title = `Altura permite máximo de ${maxGavetas} gaveta(s).`;
+                if (valorAtual > maxGavetas) inputQtd.value = maxGavetas;
+            } else if (tipo === "porta_tempero") {
+                inputQtd.max = 1;
+                if (valorAtual > 1) inputQtd.value = 1;
+            }
+
+            if (parseInt(inputQtd.value) < 1) inputQtd.value = 1;
+        }
+
+        function gerarCenarioAmbiente() {
+            var paramsAmb = {
+                formato: document.getElementById('ambiente_formato').value,
+                dim_x: parseFloat(document.getElementById('amb_dim_x').value) || 4000,
+                dim_y: parseFloat(document.getElementById('amb_dim_y').value) || 3000,
+                dim_z: parseFloat(document.getElementById('amb_dim_z').value) || 2600,
+                esp_parede: parseFloat(document.getElementById('amb_esp_parede').value) || 150
+            };
+            if (typeof sketchup !== 'undefined') { sketchup.gerarAmbiente3D(paramsAmb); }
+        }
+
+        function enviarParaRuby() {
+            var idEdicao = idEdicaoAtual || document.getElementById('id_edicao')?.value || "";
+            
+            var params = {
+                "id_edicao": idEdicao,
+                "categoria_modulo": document.getElementById('categoria_modulo').value,
+                "perfil_montagem": document.getElementById('perfil_montagem').value,
+                "montagem_caixa": document.getElementById('tipo_montagem_caixa').value,
+                "fita_laterais_base": document.getElementById('fita_laterais_base').checked,
+                "com_fundo": document.getElementById('com_fundo').value === "sim",
+                "tipo_sarrafo_tras": document.getElementById('sarrafo_tras').value,
+
+                // Dimensões Principais
+                "w": parseFloat(document.getElementById('largura').value) || 800.0,
+                "h": parseFloat(document.getElementById('altura').value) || 700.0,
+                "d": parseFloat(document.getElementById('profundidade').value) || 550.0,
+
+                // Posicionamento 3D no Ambiente
+                "pos_x_absoluta": parseFloat(document.getElementById('ambiente_pos_x').value) || 0.0,
+                "pos_y_absoluta": parseFloat(document.getElementById('ambiente_pos_y').value) || 0.0,
+                "pos_z_absoluta": parseFloat(document.getElementById('ambiente_pos_z').value) || 0.0,
+                "rot_z_absoluta": parseFloat(document.getElementById('ambiente_rot_z').value) || 0.0,
+            
+                // Materiais e Fitas
+                "material_caixaria": document.getElementById('material_caixaria').value,
+                "material_frentes": document.getElementById('material_frentes').value,
+                "fita_borda_frontal": document.getElementById('fita_borda_frontal').checked,
+                "fita_borda_traseira": document.getElementById('fita_borda_traseira').checked,
+                "fita_borda_esquerda": document.getElementById('fita_borda_esquerda').checked,
+                "fita_borda_direita": document.getElementById('fita_borda_direita').checked,
+
+                // Aba de ajustes
+                param_prof_rasgo: parseFloat(document.getElementById('fab_prof_rasgo')?.value) || 8.0,
+                param_larg_rasgo: parseFloat(document.getElementById('fab_larg_rasgo')?.value) || 7.0,
+                param_broca_minifix: parseFloat(document.getElementById('fab_broca_minifix')?.value) || 5.0,
+                param_broca_parafuso: parseFloat(document.getElementById('fab_broca_parafuso')?.value) || 4.5,
+                param_broca_cavilha: parseFloat(document.getElementById('fab_broca_cavilha')?.value) || 6.0,
+                param_broca_caneco: parseFloat(document.getElementById('fab_broca_caneco')?.value) || 35.0,
+                param_furo_front: parseFloat(document.getElementById('fab_furo_front')?.value) || 50.0,
+                param_furo_tras: parseFloat(document.getElementById('fab_furo_tras')?.value) || 50.0,
+                param_furo_max_vao: parseFloat(document.getElementById('fab_furo_max_vao')?.value) || 250.0,
+                param_furo_gaveta: parseFloat(document.getElementById('fab_furo_gaveta')?.value) || 30.0,
+            
+                // Gaps e Recuos
+                "gap_sup": parseFloat(document.getElementById('gap_sup').value) || 4.0,
+                "gap_inf": parseFloat(document.getElementById('gap_inf').value) || 4.0,
+                "gap_lat": parseFloat(document.getElementById('gap_lat').value) || 4.0,
+                "gap_int": parseFloat(document.getElementById('gap_int').value) || 4.0,
+                "param_recuo_fundo": parseFloat(document.getElementById('mod_recuo_fundo').value) || 15.0,
+                "param_recuo_frt_prat": parseFloat(document.getElementById('recuo_frt_prat').value) || 20.0,
+                "param_recuo_trs_prat": parseFloat(document.getElementById('recuo_trs_prat').value) || 22.0,
+                "param_recuo_frt_div": parseFloat(document.getElementById('recuo_frt_div').value) || 0.0,
+                "param_recuo_trs_div": parseFloat(document.getElementById('recuo_trs_div').value) || 22.0,
+            
+                // Parâmetros do Construtor Visual
+                "arvore_json": JSON.stringify(bspTree)
+            };
+        
+            if (typeof sketchup !== 'undefined' && typeof sketchup.gerarBalcao === 'function') {
+                sketchup.gerarBalcao(params);
+            } else {
+                console.log("Payload enviado ao Ruby:", params);
+            }
+        }
+
+        // ==============================================================================
+        // 🤖 INTEGRAÇÃO DO COPILOTO TIRANOGIO (index.html)
+        // ==============================================================================
+            
+        async function enviarComandoCopiloto(textoComando) {
+            const arvoreAtual = typeof bspTree !== 'undefined' ? bspTree : (window.arvoreBSPATUAL || {});
+        
+            console.log("🚀 Enviando comando ao Copiloto TiranoGio:", textoComando);
+        
+            try {
+                // Envia a requisição HTTP direta para o servidor Flask
+                const resposta = await fetch('http://localhost:5000/api/copiloto/interpretar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        comando: textoComando,
+                        arvore_atual: arvoreAtual
+                    })
+                });
+            
+                const resultado = await resposta.json();
+            
+                if (resultado.status === 'sucesso') {
+                    console.log("✅ Nova Árvore BSP recebida do Copiloto:", resultado.arvore_bsp);
+                    
+                    // 1. Atualiza a árvore BSP no HTML e re-renderiza o 2D
+                    bspTree = resultado.arvore_bsp;
+                    noSelecionadoId = bspTree.id || "V";
+                    nosSelecionadosIds = [noSelecionadoId];
+                    
+                    if (typeof renderizarArvore === 'function') {
+                        renderizarArvore();
+                    }
+                    if (typeof atualizarPainelEdicao === 'function') {
+                        atualizarPainelEdicao();
+                    }
+                
+                    // 2. Notifica o SketchUp Ruby para re-fabricar o modelo 3D no CAD
+                    if (typeof sketchup !== 'undefined' && typeof sketchup.receberArvoreCopiloto === 'function') {
+                        sketchup.receberArvoreCopiloto(JSON.stringify(resultado.arvore_bsp));
+                    } else if (typeof sketchup !== 'undefined' && typeof sketchup.gerarBalcao === 'function') {
+                        // Fallback: Dispara a re-fabricação com os parâmetros atuais da UI
+                        enviarParaRuby();
+                    }
+                
+                } else {
+                    alert("⚠️ Erro do Copiloto: " + (resultado.mensagem || "Não foi possível interpretar o comando."));
+                }
+            } catch (erro) {
+                console.error("❌ Falha na comunicação com o servidor Flask:", erro);
+                alert("❌ Falha ao conectar ao servidor Flask (Verifique se 'python app.py' está rodando na porta 5000).");
+            }
+        }
+        
+        function dispararCopiloto() {
+            const campoTexto = document.getElementById('txt-comando-copiloto');
+            if (!campoTexto) return;
+        
+            const comando = campoTexto.value.trim();
+        
+            if (!comando) {
+                alert("Digite um comando para o Copiloto!");
+                return;
+            }
+        
+            // Feedback visual de processamento
+            campoTexto.disabled = true;
+            const textoOriginal = campoTexto.value;
+            campoTexto.value = "🤖 Copiloto pensando...";
+        
+            enviarComandoCopiloto(comando)
+                .then(() => {
+                    campoTexto.value = "";
+                    campoTexto.disabled = false;
+                })
+                .catch(() => {
+                    campoTexto.disabled = false;
+                    campoTexto.value = textoOriginal;
+                });
+        }
+
+        function dispararExportacaoFlask() {
+            let w = parseFloat(document.getElementById('largura').value) || 800;
+            let h = parseFloat(document.getElementById('altura').value) || 700;
+            let d = parseFloat(document.getElementById('profundidade').value) || 550;
+
+            var parametrosModulo = {
+                id_modulo: idEdicaoAtual || "001",
+                guid: "guid-" + Math.random().toString(36).substr(2, 9),
+                nome_projeto: "Balcão Customizado",
+                familia: document.getElementById('categoria_modulo').value,
+                dimensoes_ocupadas: { largura_x: w, altura_y: h, profundidade_z: d },
+                lista_de_pecas: []
+            };
+            window.open(`http://localhost:5000/visualizador/${parametrosModulo.id_modulo}`, '_blank');
+        }
+    </script>
+</body>
+
+</html>

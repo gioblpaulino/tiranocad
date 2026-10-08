@@ -1,0 +1,49 @@
+{
+  "fabricante": "Berneck",
+  "padroes": [
+    {
+      "id": "berneck_branco_concept",
+      "nome": "Branco Concept",
+      "linha": "Concept",
+      "cor_rgb": [248, 248, 248],
+      "textura_url": null,
+      "tem_veio": false,
+      "espessuras_disponiveis": [6.0, 15.0, 18.0, 25.0],
+      "dimensoes_chapa": { "comprimento": 2750.0, "largura": 1850.0 },
+      "propriedades_opticas": { "roughness": 0.85, "reflection": 0.05 }
+    },
+    {
+      "id": "berneck_carvalho_treviso",
+      "nome": "Carvalho Treviso",
+      "linha": "Madeirados",
+      "cor_rgb": [178, 138, 96],
+      "textura_url": "texturas/berneck/carvalho_treviso.jpg",
+      "tem_veio": true,
+      "espessuras_disponiveis": [15.0, 18.0],
+      "dimensoes_chapa": { "comprimento": 2750.0, "largura": 1850.0 },
+      "propriedades_opticas": { "roughness": 0.4, "reflection": 0.1 }
+    },
+    {
+      "id": "berneck_grafito",
+      "nome": "Grafito",
+      "linha": "Unicores",
+      "cor_rgb": [75, 78, 82],
+      "textura_url": null,
+      "tem_veio": false,
+      "espessuras_disponiveis": [15.0, 18.0, 25.0],
+      "dimensoes_chapa": { "comprimento": 2750.0, "largura": 1850.0 },
+      "propriedades_opticas": { "roughness": 0.65, "reflection": 0.08 }
+    },
+    {
+      "id": "berneck_nogal_sevilha",
+      "nome": "Nogal Sevilha",
+      "linha": "Madeirados",
+      "cor_rgb": [112, 78, 55],
+      "textura_url": "texturas/berneck/nogal_sevilha.jpg",
+      "tem_veio": true,
+      "espessuras_disponiveis": [15.0, 18.0],
+      "dimensoes_chapa": { "comprimento": 2750.0, "largura": 1850.0 },
+      "propriedades_opticas": { "roughness": 0.42, "reflection": 0.1 }
+    }
+  ]
+}

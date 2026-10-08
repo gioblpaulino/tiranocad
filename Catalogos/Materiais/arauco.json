@@ -1,0 +1,49 @@
+{
+  "fabricante": "Arauco",
+  "padroes": [
+    {
+      "id": "arauco_branco_supremo",
+      "nome": "Branco Supremo",
+      "linha": "Unicolor",
+      "cor_rgb": [245, 245, 245],
+      "textura_url": null,
+      "tem_veio": false,
+      "espessuras_disponiveis": [6.0, 15.0, 18.0, 25.0],
+      "dimensoes_chapa": { "comprimento": 2750.0, "largura": 1850.0 },
+      "propriedades_opticas": { "roughness": 0.8, "reflection": 0.05 }
+    },
+    {
+      "id": "arauco_louro_freijo",
+      "nome": "Louro Freijó",
+      "linha": "Madeiras do Brasil",
+      "cor_rgb": [165, 122, 78],
+      "textura_url": "texturas/arauco/louro_freijo.jpg",
+      "tem_veio": true,
+      "espessuras_disponiveis": [15.0, 18.0, 25.0],
+      "dimensoes_chapa": { "comprimento": 2750.0, "largura": 1850.0 },
+      "propriedades_opticas": { "roughness": 0.45, "reflection": 0.1 }
+    },
+    {
+      "id": "arauco_cinza_sagrado",
+      "nome": "Cinza Sagrado",
+      "linha": "Trends",
+      "cor_rgb": [128, 130, 133],
+      "textura_url": null,
+      "tem_veio": false,
+      "espessuras_disponiveis": [15.0, 18.0],
+      "dimensoes_chapa": { "comprimento": 2750.0, "largura": 1850.0 },
+      "propriedades_opticas": { "roughness": 0.7, "reflection": 0.08 }
+    },
+    {
+      "id": "arauco_azul_scapa",
+      "nome": "Azul Scapa",
+      "linha": "Trends",
+      "cor_rgb": [42, 60, 78],
+      "textura_url": null,
+      "tem_veio": false,
+      "espessuras_disponiveis": [15.0, 18.0],
+      "dimensoes_chapa": { "comprimento": 2750.0, "largura": 1850.0 },
+      "propriedades_opticas": { "roughness": 0.6, "reflection": 0.08 }
+    }
+  ]
+}

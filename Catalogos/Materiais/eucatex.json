@@ -1,0 +1,38 @@
+{
+  "fabricante": "Eucatex",
+  "padroes": [
+    {
+      "id": "eucatex_branco_neve",
+      "nome": "Branco Neve",
+      "linha": "BP Matt",
+      "cor_rgb": [242, 242, 242],
+      "textura_url": null,
+      "tem_veio": false,
+      "espessuras_disponiveis": [6.0, 15.0, 18.0],
+      "dimensoes_chapa": { "comprimento": 2750.0, "largura": 1850.0 },
+      "propriedades_opticas": { "roughness": 0.8, "reflection": 0.05 }
+    },
+    {
+      "id": "eucatex_freijo_fume",
+      "nome": "Freijó Fumê",
+      "linha": "Raízes",
+      "cor_rgb": [138, 98, 66],
+      "textura_url": "texturas/eucatex/freijo_fume.jpg",
+      "tem_veio": true,
+      "espessuras_disponiveis": [15.0, 18.0],
+      "dimensoes_chapa": { "comprimento": 2750.0, "largura": 1850.0 },
+      "propriedades_opticas": { "roughness": 0.45, "reflection": 0.08 }
+    },
+    {
+      "id": "eucatex_cinza_urbano",
+      "nome": "Cinza Urbano",
+      "linha": "Lacquanott",
+      "cor_rgb": [150, 153, 156],
+      "textura_url": null,
+      "tem_veio": false,
+      "espessuras_disponiveis": [15.0, 18.0],
+      "dimensoes_chapa": { "comprimento": 2750.0, "largura": 1850.0 },
+      "propriedades_opticas": { "roughness": 0.5, "reflection": 0.12 }
+    }
+  ]
+}
