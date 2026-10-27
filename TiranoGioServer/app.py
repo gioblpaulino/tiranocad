@@ -144,7 +144,7 @@ def interpretar_comando_copiloto():
 
         # Chamada oficial para a SDK do Gemini
         response = gemini_client.models.generate_content(
-            model="gemini-3.8-flash",
+            model="gemini-3.6-flash",
             contents=prompt_instrucao,
             config=types.GenerateContentConfig(
                 system_instruction=PROMPT_SISTEMA_COPILOTO,
